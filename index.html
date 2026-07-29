@@ -985,15 +985,33 @@
       padding: 15px;
       background: rgba(255,255,255,.66);
       cursor: pointer;
+      transition: box-shadow .15s ease;
     }
+    .check:active { box-shadow: inset 0 0 0 2px var(--vermilion); }
     .check input {
+      flex: 0 0 auto;
       width: 20px;
       height: 20px;
-      margin: 2px 0 0;
+      margin: 3px 0 0;
       accent-color: var(--vermilion);
     }
+    .check > span { flex: 1; min-width: 0; }
     .check strong { display: block; font-size: 14px; }
-    .check span { color: var(--muted); font-size: 12px; }
+    .check .check-sub { color: var(--muted); font-size: 12px; display: block; margin-top: 3px; }
+    .check-time {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 4px;
+      padding: 2px 7px 2px 5px;
+      border-radius: 4px;
+      background: #f0ebe0;
+      color: var(--vermilion-dark);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .04em;
+      white-space: nowrap;
+    }
     .check:has(input:checked) { opacity: .58; }
     .check:has(input:checked) strong { text-decoration: line-through; }
 
@@ -1090,6 +1108,12 @@
       .image-break { margin-inline: -11px; }
       .image-break img { height: 245px; }
       .food-grid, .checklist, .safety { grid-template-columns: 1fr; }
+      .check { padding: 14px 12px; gap: 10px; }
+      .check input { width: 22px; height: 22px; margin-top: 2px; }
+      .check-time { font-size: 10px; padding: 1px 6px 1px 4px; }
+      .check strong { font-size: 14px; }
+      .check .check-sub { font-size: 12px; }
+      .booking { min-height: auto; padding: 16px 14px; }
       .culture-card { padding: 21px 18px; }
       .culture-lens { grid-template-columns: 1fr; }
       .safety-item + .safety-item { border-left: 0; border-top: 1px solid rgba(255,255,255,.18); }
@@ -1917,19 +1941,19 @@
           <div><strong>一键能做到的是“直达官方入口”，实名信息仍须本人填写。</strong>按钮打不开时，先复制对应公众号/小程序名称，再到微信搜索；不要购买“保证抢到”“免预约入场”或夹带购物的私人链接。</div>
         </div>
         <div class="checklist">
-          <label class="check"><input type="checkbox" data-task="hotel"><span><strong>确认康铂酒店：4晚 × 2间</strong><span>7月30日入住、8月3日退房；核对5人入住、床型、无烟、同楼层、远离电梯。</span></span></label>
-          <label class="check"><input type="checkbox" data-task="airport-in"><span><strong>预约7月30日接机7座车</strong><span>预计18:15–18:30上车；订单备注5人及行李数量。</span></span></label>
-          <label class="check"><input type="checkbox" data-task="airport-out"><span><strong>预约8月3日送机7座车</strong><span>09:15康铂酒店发车；8月2日晚补充确认航站楼和雨天上车点。</span></span></label>
-          <label class="check"><input type="checkbox" data-task="city-wall"><span><strong>购买7月31日西安城墙门票</strong><span>4位家人实名；选择永宁门、上午时段。</span></span></label>
-          <label class="check"><input type="checkbox" data-task="beilin"><span><strong>购买7月31日碑林博物馆门票</strong><span>计划10:15入馆；携带老人、学生优惠所需证件。</span></span></label>
-          <label class="check"><input type="checkbox" data-task="bell-drum"><span><strong>购买7月31日钟鼓楼联票</strong><span>选择下午时段；若只登一座则优先钟楼。</span></span></label>
-          <label class="check"><input type="checkbox" data-task="bmy"><span><strong>购买8月1日兵马俑官方票</strong><span>4位游客全部实名；免票/优惠人员也按官方要求预约。</span></span></label>
-          <label class="check"><input type="checkbox" data-task="huaqing"><span><strong>购买8月1日华清宫官方票</strong><span>通过“华清宫景区”公众号或官方旗舰店实名购买；不买《长恨歌》深夜场。</span></span></label>
-          <label class="check"><input type="checkbox" data-task="charter"><span><strong>订8月1日临潼双景点7座车</strong><span>兵马俑+华清宫、无购物、酒店接送、可删减返程；保存车牌和司机电话。</span></span></label>
-          <label class="check"><input type="checkbox" data-task="sxhm"><span><strong>7月28日17:00抢8月2日陕历博</strong><span>先在官方公众号预填信息；满65周岁老人无需预约，其他符合规则的同行人按证件预约。</span></span></label>
-          <label class="check"><input type="checkbox" data-task="conference"><span><strong>准备 CCFLink 与参会资料</strong><span>签到二维码、邀请函、单位抬头、税号、发票邮箱。</span></span></label>
-          <label class="check"><input type="checkbox" data-task="ids"><span><strong>交叉检查5人证件</strong><span>每人身份证原件；儿童相关证件与学生优惠凭证按需携带。</span></span></label>
-          <label class="check"><input type="checkbox" data-task="kit"><span><strong>准备盛夏随身包</strong><span>水、补液盐、遮阳帽、折叠伞、防晒、湿巾、常用药、充电宝。</span></span></label>
+          <label class="check"><input type="checkbox" data-task="hotel"><span><span class="check-time">⏰ 7/30 20:00入→8/3 09:00退</span><strong>确认康铂酒店：4晚 × 2间</strong><span class="check-sub">核对5人入住、床型、无烟、同楼层、远离电梯。</span></span></label>
+          <label class="check"><input type="checkbox" data-task="airport-in"><span><span class="check-time">⏰ 7/30 18:15-18:30上车</span><strong>预约7月30日接机7座车</strong><span class="check-sub">订单备注5人及行李数量，司机在有顶上客点等候</span></span></label>
+          <label class="check"><input type="checkbox" data-task="airport-out"><span><span class="check-time">⏰ 8/3 09:15发车</span><strong>预约8月3日送机7座车</strong><span class="check-sub">目标11:00前到机场；8/2晚确认航站楼和雨天上车点</span></span></label>
+          <label class="check"><input type="checkbox" data-task="city-wall"><span><span class="check-time">⏰ 7/31 08:25-09:55 永宁门</span><strong>购买7月31日西安城墙门票</strong><span class="check-sub">4位家人实名；选择永宁门上午时段</span></span></label>
+          <label class="check"><input type="checkbox" data-task="beilin"><span><span class="check-time">⏰ 7/31 10:15入馆</span><strong>购买7月31日碑林博物馆门票</strong><span class="check-sub">携带老人、学生优惠所需证件</span></span></label>
+          <label class="check"><input type="checkbox" data-task="bell-drum"><span><span class="check-time">⏰ 7/31 14:00-15:30</span><strong>购买7月31日钟鼓楼联票</strong><span class="check-sub">选择下午时段联票；若只登一座则优先钟楼</span></span></label>
+          <label class="check"><input type="checkbox" data-task="bmy"><span><span class="check-time">⏰ 8/1 08:00-11:30</span><strong>购买8月1日兵马俑官方票</strong><span class="check-sub">4位游客全部实名；免票/优惠人员也按官方要求预约</span></span></label>
+          <label class="check"><input type="checkbox" data-task="huaqing"><span><span class="check-time">⏰ 8/1 13:30-16:00</span><strong>购买8月1日华清宫官方票</strong><span class="check-sub">通过官方公众号或旗舰店实名购买；不买深夜场</span></span></label>
+          <label class="check"><input type="checkbox" data-task="charter"><span><span class="check-time">⏰ 8/1 07:00出发→17:40返店</span><strong>订8月1日临潼双景点7座车</strong><span class="check-sub">兵马俑+华清宫、无购物、酒店接送；保存车牌和司机电话</span></span></label>
+          <label class="check"><input type="checkbox" data-task="sxhm"><span><span class="check-time">⏰ 已过抢票日 → 备选：大兴善寺</span><strong>陕历博（抢票已结束）或走备选线</strong><span class="check-sub">若未抢到→大兴善寺+赛格；满65周岁老人免预约</span></span></label>
+          <label class="check"><input type="checkbox" data-task="conference"><span><span class="check-time">⏰ 7/31 07:40签 / 8/1 08:00签</span><strong>准备 CCFLink 与参会资料</strong><span class="check-sub">签到二维码、邀请函、单位抬头、税号、发票邮箱</span></span></label>
+          <label class="check"><input type="checkbox" data-task="ids"><span><span class="check-time">⏰ 随身携带</span><strong>交叉检查5人证件</strong><span class="check-sub">每人身份证原件；儿童相关证件与学生优惠凭证按需携带</span></span></label>
+          <label class="check"><input type="checkbox" data-task="kit"><span><span class="check-time">⏰ 随身携带</span><strong>准备盛夏随身包</strong><span class="check-sub">水、补液盐、遮阳帽、折叠伞、防晒、湿巾、常用药、充电宝</span></span></label>
         </div>
       </section>
 
