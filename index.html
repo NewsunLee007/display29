@@ -1,11 +1,18 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" class="is-locked">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#7f271f">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22><rect width=%2264%22 height=%2264%22 rx=%2212%22 fill=%22%237f271f%22/><text x=%2232%22 y=%2245%22 text-anchor=%22middle%22 font-size=%2241%22 fill=%22%23f4d79e%22>安</text></svg>">
   <title>长安同行｜西安会议家庭行程</title>
+  <script>
+    try {
+      if (sessionStorage.getItem("xian-family-trip:access") === "1") {
+        document.documentElement.classList.replace("is-locked", "is-unlocked");
+      }
+    } catch {}
+  </script>
   <style>
     :root {
       --ink: #1c2527;
@@ -26,6 +33,8 @@
 
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
+    .is-locked { overflow: hidden; }
+    .is-unlocked .access-gate { display: none; }
     body {
       margin: 0;
       color: var(--ink);
@@ -801,10 +810,10 @@
       .day-date .dow { margin-bottom: 3px; }
       .lane { padding: 18px 14px; }
       .timeline { margin-left: 1px; padding-left: 20px; }
-      .stop { grid-template-columns: 66px minmax(0, 1fr); gap: 8px; }
+      .stop { grid-template-columns: 56px minmax(0, 1fr); gap: 4px; padding-bottom: 14px; }
       .stop::before { left: -20px; }
       .time { font-size: 12px; }
-      .stop-card strong { font-size: 15px; }
+      .stop-card strong { font-size: 13.5px; line-height: 1.4; }
       .image-break { margin-inline: -11px; }
       .image-break img { height: 245px; }
       .food-grid, .checklist, .safety { grid-template-columns: 1fr; }
@@ -850,6 +859,24 @@
       .day-date { position: static; }
       a { text-decoration: none; }
     }
+  
+    .access-gate { position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; background: var(--paper); }
+    .access-bg { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(106,33,28,.85) 0%, rgba(74,30,24,.72) 100%); opacity: .3; }
+    .access-panel { position: relative; width: min(400px, calc(100vw - 40px)); padding: 48px 36px 40px; background: rgba(255,253,248,.97); box-shadow: var(--shadow); text-align: center; }
+    .access-panel.has-error { animation: shake .32s; }
+    @keyframes shake { 0%,100% { transform: translateX(0); } 20%,60% { transform: translateX(-8px); } 40%,80% { transform: translateX(8px); } }
+    .access-icon { font-size: 48px; line-height: 1; margin-bottom: 10px; }
+    .access-panel h2 { margin: 0 0 4px; font: 800 32px/1.1 "STSong","Songti SC",serif; letter-spacing: -.03em; color: var(--vermilion-dark); }
+    .access-intro { margin: 0; font-size: 14px; color: var(--muted); }
+    .access-sub { margin: 14px 0 22px; font-size: 13px; color: var(--muted); }
+    .access-form label { display: block; margin-bottom: 8px; font-size: 12px; font-weight: 800; letter-spacing: .1em; color: var(--vermilion-dark); text-align: left; }
+    .access-row { display: flex; gap: 8px; }
+    .access-row input { flex: 1; height: 48px; border: 1px solid var(--line); padding: 0 14px; font: inherit; font-size: 20px; letter-spacing: .3em; text-align: center; background: var(--white); outline: none; transition: border-color .18s; }
+    .access-row input:focus { border-color: var(--vermilion); }
+    .access-row button { flex: 0 0 auto; height: 48px; border: 0; padding: 0 22px; color: #fff; background: var(--vermilion); font: inherit; font-size: 14px; font-weight: 800; cursor: pointer; transition: background .18s; }
+    .access-row button:hover { background: var(--vermilion-dark); }
+    .access-row button:disabled { cursor: wait; opacity: .6; }
+    .access-error { margin: 10px 0 0; font-size: 13px; color: var(--vermilion); min-height: 1.2em; }
   </style>
 </head>
 <body>
@@ -874,7 +901,9 @@
     </div>
   </header>
 
-  <main>
+  
+  <div class="access-gate" id="access-gate"><div class="access-bg"></div><div class="access-panel" id="access-panel"><div class="access-icon">🏛</div><h2>长安同行</h2><p class="access-intro">西安会议家庭行程 · 5人4晚</p><p class="access-sub">请输入访问密码查看完整行程</p><form class="access-form" id="access-form" novalidate><label for="access-password">访问密码</label><div class="access-row"><input id="access-password" name="password" type="password" inputmode="numeric" autocomplete="current-password" maxlength="6" pattern="[0-9]*" required><button type="submit">进入行程</button></div><p class="access-error" id="access-error" aria-live="polite"></p></form></div></div>
+<main>
     <section class="hero" id="overview">
       <div class="hero-inner">
         <div class="eyebrow">Wenzhou → Xi'an · Family Field Guide</div>
@@ -1096,19 +1125,23 @@
                 <div class="lane-title">女儿带队 · 4人古城经典线</div>
                 <div class="timeline">
                   <div class="stop"><div class="time">08:00</div><div class="stop-card"><strong>酒店早餐后打车出发</strong><p>酒店到永宁门约3公里，正常15分钟左右；爷爷奶奶各自携带身份证和常用药，女儿负责门票截图与叫车。</p></div></div>
-                  <div class="stop"><div class="time">08:25</div><div class="stop-card"><strong>西安城墙 · 永宁门精华段</strong><p>游览约80分钟：瓮城、箭楼、城楼和南门附近城墙。状态好可向东走到文昌门方向再返回；不骑车、不绕城，避免第一站就消耗过大。</p>
+                  <div class="stop"><div class="time">08:25</div><div class="stop-card"><strong>西安城墙 · 永宁门精华段</strong><p>游览约80分钟：瓮城、箭楼、城楼和南门附近城墙。状态好可向东走到文昌门方向再返回；不骑车、不绕城，避免第一站就消耗过大。西安城墙是中国现存规模最大、保存最完整的古代城垣，始建于隋代（582年），明代（1370年）在唐长安城基础上扩建。永宁门是城墙最古老、最完整的城门之一，门名取自《周易》"永宁"之意。</p>
                     <div class="stop-actions">
                       <a class="map-link" href="https://uri.amap.com/navigation?to=108.947010,34.251573,%E8%A5%BF%E5%AE%89%E5%9F%8E%E5%A2%99%E6%B0%B8%E5%AE%81%E9%97%A8%E5%9F%8E%E6%A5%BC&mode=car&src=xian-family-trip&coordinate=gaode&callnative=1" target="_blank" rel="noopener">永宁门导航</a>
                       <a class="info-link" href="https://www.xacitywall.com/" target="_blank" rel="noopener">城墙官方平台</a>
+                      <a class="info-link" href="https://baike.baidu.com/item/%E8%A5%BF%E5%AE%89%E5%9F%8E%E5%A2%99/10717463" target="_blank" rel="noopener">城墙·百科</a>
+                      <a class="info-link" href="https://baike.baidu.com/item/%E8%A5%BF%E5%AE%89%E5%9F%8E%E5%A2%99/10717463" target="_blank" rel="noopener">城墙·百科</a>
                     </div>
                   </div></div>
                   <div class="stop"><div class="time">09:55</div><div class="stop-card"><strong>书院门步行到碑林博物馆</strong><p>从永宁门下城后进入书院门，约700米、15分钟慢走到碑林。沿线连续、不用叫车；书院门只浏览，不长时间购物。</p>
-                    <div class="stop-actions"><a class="map-link" href="https://uri.amap.com/search?keyword=%E4%B9%A6%E9%99%A2%E9%97%A8%E6%96%87%E5%8C%96%E8%A1%97&city=%E8%A5%BF%E5%AE%89&view=map&src=xian-family-trip&callnative=1" target="_blank" rel="noopener">书院门定位</a></div>
+                    <div class="stop-actions"><a class="map-link" href="https://uri.amap.com/search?keyword=%E4%B9%A6%E9%99%A2%E9%97%A8%E6%96%87%E5%8C%96%E8%A1%97&city=%E8%A5%BF%E5%AE%89&view=map&src=xian-family-trip&callnative=1" target="_blank" rel="noopener">书院门定位</a>
+                      <a class="info-link" href="https://baike.baidu.com/item/%E4%B9%A6%E9%99%A2%E9%97%A8/6992266" target="_blank" rel="noopener">书院门·百科</a></div>
                   </div></div>
                   <div class="stop"><div class="time">10:15</div><div class="stop-card"><strong>西安碑林博物馆 · 室内主站</strong><p>参观至12:00，重点看《开成石经》、颜真卿和柳公权名碑、昭陵六骏。这里也是上午第一处稳定的室内休息点；不逐块碑读完，控制体力。</p>
                     <div class="stop-actions">
                       <a class="map-link" href="https://uri.amap.com/search?keyword=%E8%A5%BF%E5%AE%89%E7%A2%91%E6%9E%97%E5%8D%9A%E7%89%A9%E9%A6%86&city=%E8%A5%BF%E5%AE%89&view=map&src=xian-family-trip&callnative=1" target="_blank" rel="noopener">碑林导航</a>
                       <a class="info-link" href="https://pcticket.xablbwg.cn/museum/" target="_blank" rel="noopener">官方实名购票</a>
+                      <a class="info-link" href="https://baike.baidu.com/item/%E8%A5%BF%E5%AE%89%E7%A2%91%E6%9E%97/3007598" target="_blank" rel="noopener">碑林·百科</a>
                     </div>
                   </div></div>
                   <div class="stop"><div class="time">12:05</div><div class="stop-card"><strong>短途打车到钟楼商圈</strong><p>碑林到开元商城钟楼店约2公里，正常10—15分钟。高温时不沿南大街硬走，把步数留给下午。</p>
@@ -1118,7 +1151,8 @@
                   <div class="stop"><div class="time">14:00</div><div class="stop-card"><strong>钟楼登楼 → 鼓楼登楼</strong><p>先由地下通道进入钟楼，约40分钟；再步行约600米到鼓楼，约45分钟。两位老人若仍轻松就两座都登；若天气闷热，则钟楼登楼、鼓楼只看外景。</p>
                     <div class="stop-actions">
                       <a class="map-link" href="https://uri.amap.com/navigation?to=108.947030,34.259430,%E8%A5%BF%E5%AE%89%E9%92%9F%E6%A5%BC&mode=walk&src=xian-family-trip&coordinate=gaode&callnative=1" target="_blank" rel="noopener">钟楼导航</a>
-                      <button class="btn small" type="button" data-copy="西安钟鼓楼博物馆">复制官方公众号名</button>
+                      <a class="info-link" href="https://baike.baidu.com/item/%E8%A5%BF%E5%AE%89%E9%92%9F%E6%A5%BC/11022448" target="_blank" rel="noopener">钟楼·百科</a>
+                      <button class="btn small" type="button" data-copy="西安钟鼓楼博物馆">复制公众号</button>
                     </div>
                   </div></div>
                   <div class="stop"><div class="time">15:45</div><div class="stop-card"><strong>回民街 → 西安清真大寺</strong><p>鼓楼北侧进入回坊，先走北院门，再到化觉巷清真大寺。寺院庭院安静，可坐下休息约30分钟；尊重礼仪，不进入礼拜大殿。全段约1.5小时。之后在回民街自由选1—2样小吃品尝。</p>
@@ -1173,12 +1207,14 @@
                 <div class="stop-actions">
                   <a class="map-link" href="https://uri.amap.com/navigation?to=108.955315,34.225444,%E9%99%95%E8%A5%BF%E5%8E%86%E5%8F%B2%E5%8D%9A%E7%89%A9%E9%A6%86%E5%8C%97%E9%97%A8&mode=car&src=xian-family-trip&coordinate=gaode&callnative=1" target="_blank" rel="noopener">北门导航</a>
                   <a class="info-link" href="https://www.sxhm.com/guide.html" target="_blank" rel="noopener">官方预约规则</a>
+                  <a class="info-link" href="https://baike.baidu.com/item/%E9%99%95%E8%A5%BF%E5%8E%86%E5%8F%B2%E5%8D%9A%E7%89%A9%E9%A6%86/1756742" target="_blank" rel="noopener">陕历博·百科</a>
                 </div>
               </div></div>
               <div class="stop"><div class="time">🔵 Plan B</div><div class="stop-card"><div class="time">🔵 Plan B</div><div class="stop-card"><strong>若没抢到票：西安博物院（小雁塔）</strong><p>免费开放、无需预约、人少清静、全程树荫。推荐路线：基本陈列（40分钟）→ 小雁塔外观（20分钟）→ 荐福寺园林散步（30分钟）。全程11:00前可结束，直接打车去大悦城继续后半日行程。</p>
                 <div class="stop-actions">
                   <a class="map-link" href="https://uri.amap.com/navigation?to=108.942831,34.241799,%E8%A5%BF%E5%AE%89%E5%8D%9A%E7%89%A9%E9%99%A2%28%E5%B0%8F%E9%9B%81%E5%A1%94%29&mode=car&src=xian-family-trip&coordinate=gaode&callnative=1" target="_blank" rel="noopener">导航到西安博物院</a>
                   <a class="info-link" href="https://www.xabwy.com/" target="_blank" rel="noopener">官方信息</a>
+                  <a class="info-link" href="https://baike.baidu.com/item/%E5%B0%8F%E9%9B%81%E5%A1%94/5055" target="_blank" rel="noopener">小雁塔·百科</a>
                 </div>
               </div></div>
               <div class="stop"><div class="time">11:30</div><div class="stop-card"><strong>短途前往西安大悦城</strong><p>陕历博北门到大悦城约1.5公里，高温时打车约10分钟，不步行暴晒；车辆拥堵时可改乘地铁3号线到“大雁塔站”。</p>
@@ -1188,6 +1224,8 @@
               <div class="stop"><div class="time">14:40</div><div class="stop-card"><div class="time">14:40</div><div class="stop-card"><strong>大雁塔广场与唐文化街区</strong><p>从大悦城步行约500米至大雁塔南广场。不进入寺院，在广场上欣赏大雁塔全景、拍照留念。沿大唐不夜城步行街北段散步，全程约70分钟。节奏自由，累了随时在路边长椅休息。</p>
                 <div class="stop-actions">
                   <a class="map-link" href="https://uri.amap.com/navigation?to=108.964342,34.220998,%E5%A4%A7%E9%9B%81%E5%A1%94%E5%8C%97%E5%B9%BF%E5%9C%BA&mode=walk&src=xian-family-trip&coordinate=gaode&callnative=1" target="_blank" rel="noopener">大雁塔北广场导航</a>
+                  <a class="info-link" href="https://baike.baidu.com/item/%E5%A4%A7%E9%9B%81%E5%A1%94/3063" target="_blank" rel="noopener">大雁塔·百科</a>
+                  <a class="info-link" href="https://baike.baidu.com/item/%E5%A4%A7%E5%94%90%E4%B8%8D%E5%A4%9C%E5%9F%8E/20426824" target="_blank" rel="noopener">不夜城·百科</a>
                 </div>
               </div></div>
               <div class="stop"><div class="time">16:20</div><div class="stop-card"><strong>大雁塔北广场与玄奘广场慢走</strong><p>此段以休息、拍照为主，不追逐临时演出。喷泉及街头演出时间经常调整，以当天现场公告为准。</p>
@@ -1216,12 +1254,14 @@
                     <div class="stop-actions">
                       <a class="map-link" href="https://uri.amap.com/navigation?to=109.282057,34.386299,%E7%A7%A6%E5%A7%8B%E7%9A%87%E5%B8%9D%E9%99%B5%E5%8D%9A%E7%89%A9%E9%99%A2&mode=car&src=xian-family-trip&coordinate=gaode&callnative=1" target="_blank" rel="noopener">兵马俑导航</a>
                       <a class="info-link" href="https://bmy.albatrip.cn/pc/index.html?orgId=382e8c2221654eaa965cafaaabe3cd88" target="_blank" rel="noopener">直接官方购票</a>
+                      <a class="info-link" href="https://baike.baidu.com/item/%E7%A7%A6%E5%A7%8B%E7%9A%87%E5%85%B5%E9%A9%AC%E4%BF%91/1388597" target="_blank" rel="noopener">兵马俑·百科</a>
                     </div>
                   </div></div>
                   <div class="stop"><div class="time">可选</div><div class="stop-card"><strong>🏛 候选：华清宫（仅限体力充沛时）</strong><p>兵马俑到华清宫约10公里。若上午参观后全家仍有余力，可临时决定前往华清宫望京门外散步约1小时，不进园深度游览，以休息拍照为主。若不前往，则按原计划在兵马俑商业街午餐后直接返城。此为候选方案，不必强求。</p>
                     <div class="stop-actions">
                       <a class="map-link" href="https://uri.amap.com/navigation?to=109.208008,34.365398,%E5%8D%8E%E6%B8%85%E5%AE%AB&mode=car&src=xian-family-trip&coordinate=gaode&callnative=1" target="_blank" rel="noopener">华清宫导航</a>
                       <a class="info-link" href="https://www.hqc.cn/" target="_blank" rel="noopener">官方信息</a>
+                      <a class="info-link" href="https://baike.baidu.com/item/%E5%8D%8E%E6%B8%85%E5%AE%AB/163053" target="_blank" rel="noopener">华清宫·百科</a>
                     </div>
                   </div></div>
                   <div class="stop"><div class="time">11:30</div><div class="stop-card"><strong>景区附近午餐 + 空调休整</strong><p>在兵马俑商业街或景区出口的正规餐厅吃饭（先看明码标价）。用餐约60分钟，再留20分钟上洗手间、补水和坐下休息。景区门口有德克士等连锁快餐，环境熟悉、价格透明。</p></div></div>
@@ -1433,6 +1473,54 @@
   </nav>
 
   <script>
+        const accessForm = document.getElementById("access-form");
+    const accessGate = document.getElementById("access-gate");
+    const accessPanel = document.getElementById("access-panel");
+    const accessPassword = document.getElementById("access-password");
+    const accessError = document.getElementById("access-error");
+    const accessHash = "e0bc60c82713f64ef8a57c0c40d02ce24fd0141d5cc3086259c19b1e62a62bea";
+
+    async function verifyAccessPassword(value) {
+      if (window.crypto?.subtle && window.TextEncoder) {
+        const bytes = new TextEncoder().encode(value);
+        const digest = await window.crypto.subtle.digest("SHA-256", bytes);
+        const hash = [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
+        return hash === accessHash;
+      }
+      return window.btoa(value) === "MTEyMjMz";
+    }
+
+    function unlockTrip() {
+      try { sessionStorage.setItem("xian-family-trip:access", "1"); } catch {}
+      document.documentElement.classList.replace("is-locked", "is-unlocked");
+      accessGate.setAttribute("aria-hidden", "true");
+      accessPassword.value = "";
+    }
+
+    if (document.documentElement.classList.contains("is-unlocked")) {
+      accessGate.setAttribute("aria-hidden", "true");
+    } else {
+      requestAnimationFrame(() => accessPassword.focus());
+    }
+
+    accessPassword.addEventListener("input", () => { accessError.textContent = ""; });
+
+    accessForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const submitButton = accessForm.querySelector("button[type='submit']");
+      submitButton.disabled = true;
+      submitButton.textContent = "验证中…";
+      const accepted = await verifyAccessPassword(accessPassword.value);
+      submitButton.disabled = false;
+      submitButton.textContent = "进入行程";
+      if (accepted) { unlockTrip(); return; }
+      accessError.textContent = "密码不正确，请重新输入。";
+      accessPanel.classList.remove("has-error");
+      void accessPanel.offsetWidth;
+      accessPanel.classList.add("has-error");
+      accessPassword.select();
+    });
+
     const taskPrefix = "xian-family-trip:";
     document.querySelectorAll("[data-task]").forEach((box) => {
       const key = taskPrefix + box.dataset.task;
